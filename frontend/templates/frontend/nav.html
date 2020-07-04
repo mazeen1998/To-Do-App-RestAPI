@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>nav</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+	<link href="https://fonts.googleapis.com/css2?family=Baloo+Bhaina+2:wght@500&display=swap" rel="stylesheet">
+
+	<style type="text/css">
+		*{
+			font-family: 'Baloo Bhaina 2', cursive;
+		}
+		body{
+			/*background: rgb(54,217,183);*/
+			background: linear-gradient(90deg,rgba(54,217,182,1)0%,rgba(32,152,126,1) 43%,rgba(0,212,255,1) 100%);
+
+		}
+		#task-container{
+			max-width: 600px;
+			margin: 0 auto;
+			box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+			background: #fff;
+			margin-top: 100px;
+			margin-bottom: 100px;
+			justify-content: space-around;
+			align-items: flex-start;
+		}
+		#form-wrapper{
+			position: sticky;
+			top: 0rem;
+			border-bottom: 1px solid #e9e9e9;
+			background: #fff;
+			box-shadow: 0 3px 8px rgba(0,0,0,0.25);
+			padding: 40px;
+		}
+		.flex-wrapper{
+			display: flex;
+		}
+		.task-wrapper{
+			margin:5px;
+			padding: 20px;
+			cursor: pointer;
+			border-bottom: 1px solid #e9e9e9;
+			color: #686868;
+		}
+
+	</style>
+</head>
+<body>
+	<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <span class="navbar-brand">ToDo</span>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon">hi</span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Link</a>
+      </li>
+    </ul>
+    <form class="form-inline my-2 my-lg-0">
+      <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+    </form>
+  </div>
+</nav>
+{% block content%}
+{% endblock %}
+
+</body>
+</html>

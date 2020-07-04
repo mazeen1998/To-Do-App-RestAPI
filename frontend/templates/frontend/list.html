@@ -1,0 +1,200 @@
+{% extends 'frontend/nav.html' %}
+
+{% block content %}
+	<div class='container'>
+		<div id='task-container'>
+			<div id='form-wrapper'>
+				<form id='form'>
+					<div class="flex-wrapper">
+						<div style="flex:6">
+							<input type="text" name="title" placeholder="Add Task"
+							id="title" class="form-control">
+						</div>
+						<div style="flex:1">
+							<input type="submit" id="submit" class="btn btn-outline-success">
+						</div>
+					</div>
+				</form>
+			</div>
+			<div id="list-wrapper">
+				
+			</div>
+		</div>	
+	</div>
+	<script type="text/javascript">
+
+		editbn=[]
+
+		function getCookie(name) {
+			    var cookieValue = null;
+			    if (document.cookie && document.cookie !== '') {
+			        var cookies = document.cookie.split(';');
+			        for (var i = 0; i < cookies.length; i++) {
+			            var cookie = cookies[i].trim();
+			            // Does this cookie string begin with the name we want?
+			            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+			                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+			                break;
+			            }
+			        }
+			    }
+			    return cookieValue;
+			}
+			var csrftoken = getCookie('csrftoken');
+
+		buildList()
+		
+		function buildList() {
+			var wrap=document.getElementById('list-wrapper');
+			wrap.innerHTML=''
+			var url ='http://127.0.0.1:8000/api/task-list/';
+
+			fetch(url)
+			.then((resp) => resp.json())
+			.then(function(data){
+				console.log('Data:',data);
+				var title=document.getElementById('title');
+				title.value='';
+				var list=data;
+				for(var i in list){
+					var item="<div id='data-row-"+i+"' class='task-wrapper flex-wrapper'><div style='flex:7'><span id='"+i+"' class='title'>"+list[i].title+"</span></div><div style='flex:1'><button class='btn btn-sm btn-outline-info edit'>Edit</button></div><div style='flex:1'><button class='btn btn-sm btn-outline-danger delete'>-</button></div></div>";
+						
+					wrap.innerHTML += item;
+					// debugger;
+					if (list[i].completed==true){
+						var s=document.getElementById(i);
+						s.style['text-decoration']='line-through';
+						s.style['font-style']='italic';
+						}
+					}
+
+				console.log(item.title)
+				for (var i in list){
+					eb=document.getElementsByClassName('edit')[i];
+					eb.onclick = (function(item) {
+    				return function() {
+       					editItem(item)
+    					}
+					})(list[i])
+				}
+				for (var i in list){
+					eb=document.getElementsByClassName('title')[i];
+					eb.onclick = (function(item) {
+    				return function() {
+       					strike(item)
+    					}
+					})(list[i])
+					// eb.onclick=strike(item);
+				}
+				for (var i in list){
+					eb=document.getElementsByClassName('delete')[i];
+					eb.onclick = (function(item) {
+    				return function() {
+       					deletei(item)
+    					}
+					})(list[i])
+				}
+				// editbn.forEach(editItem);
+				// (function(item,index,array){
+				// 	// item.addEventListener('click',editItem)
+				// 	console.log(item, index)
+				// })
+				// for (var i in editbn){
+				// 	editbn[i].addEventListener('click',editItem);
+				// }
+				// editbn.forEach(function(item){
+				// 	item.addEventListener('click',editItem);
+				// })
+			})
+		}
+		function deletei(item){
+			var url ='http://127.0.0.1:8000/api/task-delete/'+item.id+'/';
+				fetch(url,{
+					method:'DELETE',
+					headers:{
+						'Content-type':'application/json',
+						'X-CSRFToken':csrftoken,
+					}
+				}).then(function(response){
+					buildList()
+				})
+		}
+		function strike(item){
+				var url ='http://127.0.0.1:8000/api/task-update/'+item.id+'/';
+				// var title=document.getElementById('title')
+				// var title3=title.value
+				if(item.completed==true){
+					fetch(url,{
+						method:'POST',
+						headers:{
+							'Content-type':'application/json',
+							'X-CSRFToken':csrftoken,
+						},
+						body:JSON.stringify({'title':item.title,'completed':false})
+					}).then(function(response){
+						buildList()
+					})
+				}
+				else{
+					fetch(url,{
+						method:'POST',
+						headers:{
+							'Content-type':'application/json',
+							'X-CSRFToken':csrftoken,
+						},
+						body:JSON.stringify({'title':item.title,'completed':true})
+					}).then(function(response){
+						buildList()
+					})
+				}
+			}
+		function editItem(item){
+				// alert('displayNum :'+item);
+				// console.log('Item clicked',item.title);
+				var title=document.getElementById('title')
+				title2=item.title
+				title.value=title2
+				itemid=item.id
+				}
+
+		var form = document.getElementById('form-wrapper')
+		form.addEventListener('submit',function(e){
+			e.preventDefault()
+			// console.log('form submitted')
+			if (title2 != null){
+				var url ='http://127.0.0.1:8000/api/task-update/'+itemid+'/';
+				var title=document.getElementById('title')
+				var title3=title.value
+				fetch(url,{
+					method:'POST',
+					headers:{
+						'Content-type':'application/json',
+						'X-CSRFToken':csrftoken,
+					},
+					body:JSON.stringify({'title':title3})
+				}).then(function(response){
+					buildList()
+					title2=null;
+				})	
+			}
+			if (title2==null){
+				var url ='http://127.0.0.1:8000/api/task-create/';
+				var title=document.getElementById('title').value
+				fetch(url,{
+					method:'POST',
+					headers:{
+						'Content-type':'application/json',
+						'X-CSRFToken':csrftoken,
+					},
+					body:JSON.stringify({'title':title})
+				}).then(function(response){
+					buildList()
+				})
+			}
+		})
+		
+
+		
+
+	</script>
+{% endblock %}
